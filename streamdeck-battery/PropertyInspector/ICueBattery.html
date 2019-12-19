@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>iCue Battery Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+    <script src="ICueBattery.js"></script>
+</head>
+<body>
+    <details class="message">
+        <summary>*** NOTE: First time configuration is required (<b><u>click here</u></b> for more instructions)</summary>
+        <p>A one time configuration is required to see iCue battery stats. Head over to <span class="linkspan" onclick="openWebsiteICue()">https://BarRaider.com/iCue</span> for step-by-step instructions.</p>
+    </details>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span> </summary>
+        </details>
+        <div class="sdpi-item" id="dvDeviceName">
+            <div class="sdpi-item-label">Device Name</div>
+            <input class="sdpi-item-value sdProperty" placeholder="IRONCLAW" value="" id="deviceName">
+            <button class="sdpi-item-value minmargin" onclick="setSettings();">Save</button>
+        </div>
+    </div>
+</body>
+</html>

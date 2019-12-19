@@ -1,0 +1,57 @@
+{
+  "Actions": [
+    {
+      "Icon": "Images/icon",
+      "Name": "G Hub Battery",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows G Hub battery stats live on the Stream Deck",
+      "UUID": "com.barraider.battery.ghub",
+      "PropertyInspectorPath": "PropertyInspector/GHubBattery.html"
+    },
+    {
+      "Icon": "Images/icon",
+      "Name": "iCue Battery",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows iCUE battery stats live on the Stream Deck",
+      "UUID": "com.barraider.battery.icue",
+      "PropertyInspectorPath": "PropertyInspector/ICueBattery.html"
+    }
+  ],
+  "Author": "BarRaider",
+  "Description": "Shows live battery stats for Logitech G Hub and CORSAIR iCue on the Stream Deck",
+  "Name": "Battery",
+  "Icon": "Images/pluginIcon",
+  "URL": "https://BarRaider.com/",
+  "Version": "1.0",
+  "CodePath": "com.barraider.battery",
+  "Category": "Battery [BarRaider]",
+  "CategoryIcon": "Images/categoryIcon",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.4.1"
+  }
+}

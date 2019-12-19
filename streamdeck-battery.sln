@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battery", "streamdeck-battery\Battery.csproj", "{4635D874-69C0-4010-BE46-77EF92EB1553}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Debug|x64.ActiveCfg = Debug|x64
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Debug|x64.Build.0 = Debug|x64
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Release|Any CPU.ActiveCfg = Release|x64
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Release|x64.ActiveCfg = Release|x64
+		{4635D874-69C0-4010-BE46-77EF92EB1553}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {46DF9836-68BE-4B49-8221-5DD8581CFD04}
+	EndGlobalSection
+EndGlobal
