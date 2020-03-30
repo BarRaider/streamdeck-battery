@@ -22,7 +22,8 @@ namespace Battery.Actions
                 PluginSettings instance = new PluginSettings
                 {
                     Devices = null,
-                    Device = String.Empty
+                    Device = String.Empty,
+                    Title = String.Empty
                 };
                 return instance;
             }
@@ -32,6 +33,9 @@ namespace Battery.Actions
 
             [JsonProperty(PropertyName = "device")]
             public string Device { get; set; }
+
+            [JsonProperty(PropertyName = "title")]
+            public string Title { get; set; }
         }
 
         #region Private Members
@@ -86,7 +90,13 @@ namespace Battery.Actions
                 return;
             }
 
-            await Connection.SetTitleAsync($"{(int)stats.Percentage}%{(stats.IsCharging ? "\n⚡" : "")}");
+            string title = $"{(int)stats.Percentage}%{(stats.IsCharging ? " ⚡" : "")}";
+            if (!string.IsNullOrEmpty(settings.Title))
+            {
+                title += $"\n{settings.Title.Replace(@"\n", "\n")}";
+            }
+
+            await Connection.SetTitleAsync(title);
             if (stats.Percentage >= 75)
             {
                 await Connection.SetImageAsync(fullImage);

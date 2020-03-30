@@ -17,13 +17,17 @@ namespace Battery.Actions
             {
                 PluginSettings instance = new PluginSettings
                 {
-                    DeviceName = String.Empty
+                    DeviceName = String.Empty,
+                    Title = String.Empty
                 };
                 return instance;
             }
 
             [JsonProperty(PropertyName = "deviceName")]
             public string DeviceName { get; set; }
+
+            [JsonProperty(PropertyName = "title")]
+            public string Title { get; set; }
         }
 
         #region Private Members
@@ -82,8 +86,12 @@ namespace Battery.Actions
                 return;
             }
 
-            string batteryLevel = stats.BatteryLevel == CHARGING_TEXT ? "⚡" : stats.BatteryLevel;
-            await Connection.SetTitleAsync($"{batteryLevel}");
+            string title = stats.BatteryLevel == CHARGING_TEXT ? " ⚡" : stats.BatteryLevel;
+            if (!string.IsNullOrEmpty(settings.Title))
+            {
+                title += $"\n{settings.Title.Replace(@"\n","\n")}";
+            }
+            await Connection.SetTitleAsync(title);
             if (stats.Percentage >= 75)
             {
                 await Connection.SetImageAsync(fullImage);
