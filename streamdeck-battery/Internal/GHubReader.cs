@@ -111,7 +111,7 @@ namespace Battery.Internal
                         continue;
                     }
 
-                    if (splitName[2] != "percentage")
+                    if (splitName[2] != "warning")
                     {
                         continue;
                     }
