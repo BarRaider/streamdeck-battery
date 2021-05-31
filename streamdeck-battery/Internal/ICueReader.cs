@@ -11,7 +11,7 @@ namespace Battery.Internal
     internal class ICueReader
     {
         #region Private members
-        private const string BATTERY_STATUS_PREFIX = "Battery Status:";
+        private readonly string[] BATTERY_STATUS_PREFIXES = new string[] { "Battery Status:", "Battery Level" };
 
         private static ICueReader instance = null;
         private static readonly object objLock = new object();
@@ -64,7 +64,7 @@ namespace Battery.Internal
 
         public ICueBatteryStats GetBatteryStats(string deviceName)
         {
-            string device = deviceName.ToLower();
+            string device = deviceName.ToLowerInvariant();
             if (dicBatteryStats == null || !dicBatteryStats.ContainsKey(device))
             {
                 return null;
@@ -106,7 +106,9 @@ namespace Battery.Internal
 
                 foreach (string title in titles)
                 {
-                    if (!title.Contains(BATTERY_STATUS_PREFIX))
+                    string prefix = BATTERY_STATUS_PREFIXES.FirstOrDefault(s => title.Contains(s));
+                    // None of the prefixes exist in this title
+                    if (string.IsNullOrEmpty(prefix))
                     {
                         continue;
                     }
@@ -118,9 +120,9 @@ namespace Battery.Internal
 
                     if (!String.IsNullOrEmpty(deviceName))
                     {
-                        var position = title.LastIndexOf(BATTERY_STATUS_PREFIX);
-                        position += BATTERY_STATUS_PREFIX.Length;
-                        string batteryLevel = title.Substring(position).Trim();
+                        var position = title.LastIndexOf(prefix);
+                        position += prefix.Length;
+                        string batteryLevel = title.Substring(position)?.Replace("%","")?.Trim();
                         dicBatteryStats[deviceName] = new ICueBatteryStats() { Title = title, BatteryLevel = batteryLevel, Percentage = CalculatePercentage(batteryLevel) };
                     }
                 }
@@ -134,6 +136,12 @@ namespace Battery.Internal
 
         private double CalculatePercentage(string batteryLevel)
         {
+            // Check if it's actually a number
+            if (Int32.TryParse(batteryLevel, out int percentage))
+            {
+                return percentage;
+            }
+
             switch (batteryLevel.ToLowerInvariant())
             {
                 case "charging":
