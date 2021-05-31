@@ -18,7 +18,7 @@ namespace Battery.Internal
         [JsonProperty(PropertyName = "percentage")]
         public double Percentage { get; set; }
 
-        [JsonProperty(PropertyName = "time")]
-        public DateTime Time { get; set; }
+        //[JsonProperty(PropertyName = "time")]
+        //public DateTime Time { get; set; }
     }
 }
