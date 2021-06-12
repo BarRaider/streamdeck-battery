@@ -13,6 +13,7 @@
         }
       ],
       "SupportedInMultiActions": false,
+      "DisableCaching": true,
       "Tooltip": "Shows G Hub battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.ghub",
       "PropertyInspectorPath": "PropertyInspector/GHubBattery.html"
@@ -30,6 +31,7 @@
         }
       ],
       "SupportedInMultiActions": false,
+      "DisableCaching": true,
       "Tooltip": "Shows iCUE battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.icue",
       "PropertyInspectorPath": "PropertyInspector/ICueBattery.html"
@@ -40,7 +42,7 @@
   "Name": "Battery",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.1",
+  "Version": "1.2",
   "CodePath": "com.barraider.battery",
   "Category": "Battery [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
@@ -52,6 +54,6 @@
   ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.4.1"
+    "MinimumVersion": "4.9"
   }
 }

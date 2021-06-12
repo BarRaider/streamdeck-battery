@@ -12,6 +12,7 @@ namespace Battery.Internal
     {
         #region Private members
         private const string GHUB_SETTINGS_FILE = @"LGHUB\settings.json";
+        private const string GHUB_BATTERY_SECTION = "percentage";
 
         private static GHubReader instance = null;
         private static readonly object objLock = new object();
@@ -111,7 +112,7 @@ namespace Battery.Internal
                         continue;
                     }
 
-                    if (splitName[2] != "percentage")
+                    if (splitName[2] != GHUB_BATTERY_SECTION)
                     {
                         continue;
                     }
