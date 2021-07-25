@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Battery.Internal
     internal class GHubReader
     {
         #region Private members
-        private const string GHUB_SETTINGS_FILE = @"LGHUB\settings.json";
+        private const string GHUB_SETTINGS_FILE = @"LGHUB\settings.db";
         private const string GHUB_BATTERY_SECTION = "percentage";
 
         private static GHubReader instance = null;
@@ -102,7 +103,13 @@ namespace Battery.Internal
                     tmrRefreshStats.Stop();
                 }
 
-                var settings = JObject.Parse(File.ReadAllText(GHUB_FULL_PATH));
+                //var settings = JObject.Parse(File.ReadAllText(GHUB_FULL_PATH));
+                var settings = ReadSettingsDB(GHUB_FULL_PATH);
+                if (settings == null)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} RefreshStats: Could not read G HUB settings");
+                    return;
+                }
                 var properties = settings.Properties().Where(p => p.Name.Contains("battery")).ToList();
                 foreach (var property in properties)
                 {
@@ -125,6 +132,34 @@ namespace Battery.Internal
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"RefreshStats Error: Failed to parse json: {ex}");
                 tmrRefreshStats.Stop();
             }
+        }
+
+        private JObject ReadSettingsDB(string fileName)
+        {
+            try
+            {
+                using (var connection = new SqliteConnection($"Data Source={fileName}"))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT FILE FROM DATA ORDER BY _id DESC";
+                    using (SqliteCommand command = new SqliteCommand(sql, connection))
+                    {
+                        using (SqliteDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return JObject.Parse(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} ReadSettingsDB Exception: {ex}");
+            }
+            return null;
         }
 
         #endregion
