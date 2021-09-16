@@ -14,6 +14,7 @@ namespace Battery.Internal
         #region Private members
         private const string GHUB_SETTINGS_FILE = @"LGHUB\settings.db";
         private const string GHUB_BATTERY_SECTION = "percentage";
+        private const string GHUB_BATTERY_WARNING_SECTION = "warning";
 
         private static GHubReader instance = null;
         private static readonly object objLock = new object();
@@ -119,11 +120,17 @@ namespace Battery.Internal
                         continue;
                     }
 
-                    if (splitName[2] != GHUB_BATTERY_SECTION)
+                    if (splitName[2] != GHUB_BATTERY_SECTION && splitName[2] != GHUB_BATTERY_WARNING_SECTION)
                     {
                         continue;
                     }
                     var stats = property.Value.ToObject<GHubBatteryStats>();
+
+                    if (dicBatteryStats.ContainsKey(splitName[1]) && splitName[2] == GHUB_BATTERY_WARNING_SECTION)
+                    {
+                        continue;
+                    }
+
                     dicBatteryStats[splitName[1]] = stats;
                 }
             }
