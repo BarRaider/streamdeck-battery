@@ -38,11 +38,11 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Shows live battery stats for Logitech G Hub and CORSAIR iCue on the Stream Deck",
+  "Description": "Battery levels for Logitech G HUB and CORSAIR iCue on the Stream Deck",
   "Name": "Battery",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.2.2",
+  "Version": "1.3",
   "CodePath": "com.barraider.battery",
   "Category": "Battery [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

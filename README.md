@@ -5,6 +5,9 @@ Shows live battery stats for Logitech G Hub and CORSAIR iCue on the Stream Deck
 
 **Author's website and contact information:** [https://barraider.com](https://barraider.com)
 
+## New in v1.3
+- Support for latest G HUB version
+
 ## New in v1.2
 - Added support for new iCue v4.x 
 - Added support for new type of devices such as the **VOID PRO**
