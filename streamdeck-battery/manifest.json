@@ -20,6 +20,24 @@
     },
     {
       "Icon": "Images/icon",
+      "Name": "Xbox Controller Battery",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
+      "UUID": "com.barraider.battery.xbox",
+      "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
+    },
+    {
+      "Icon": "Images/icon",
       "Name": "iCue Battery",
       "States": [
         {

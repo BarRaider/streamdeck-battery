@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ICueBatteryStatsAction.cs" />
+    <Compile Include="Actions\XboxControllerBatteryStatsAction.cs" />
     <Compile Include="Actions\LogitechBatteryStatsAction.cs" />
     <Compile Include="Internal\GHubBatteryStats.cs" />
     <Compile Include="Internal\DeviceInfo.cs" />
@@ -108,6 +109,12 @@
     <Compile Include="Internal\ICueReader.cs" />
     <Compile Include="Internal\GHubReader.cs" />
     <Compile Include="Internal\ToolbarScanner.cs" />
+    <Compile Include="Internal\XInputWrapper\Axis.cs" />
+    <Compile Include="Internal\XInputWrapper\Battery.cs" />
+    <Compile Include="Internal\XInputWrapper\Button.cs" />
+    <Compile Include="Internal\XInputWrapper\Gamepad.cs" />
+    <Compile Include="Internal\XInputWrapper\Native.cs" />
+    <Compile Include="Internal\XInputWrapper\X.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -165,6 +172,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\elg_calendar_inv.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\XboxBattery.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\XboxBattery.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\ICueBattery.js">
