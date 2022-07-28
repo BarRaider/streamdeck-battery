@@ -88,35 +88,35 @@ namespace Battery.Actions
             switch (settings.Device)
             {
                 case "Gamepad 1":
-                    X.Gamepad1.UpdateConnectionState();
-                    if (X.Gamepad1.Available && X.Gamepad1.Connected)
+                    X.Gamepad_1.Update();
+                    if (X.Gamepad_1.IsConnected)
                     {
-                        X.Gamepad1.GamepadBattery.Update();
-                        level = X.Gamepad1.GamepadBattery.Level;
+                        X.Gamepad_1.UpdateBattery();
+                        level = X.Gamepad_1.BatteryInfo.ChargeLevel;
                     }
                     break;
                 case "Gamepad 2":
-                    X.Gamepad2.UpdateConnectionState();
-                    if (X.Gamepad2.Available && X.Gamepad2.Connected)
+                    X.Gamepad_2.Update();
+                    if (X.Gamepad_2.IsConnected)
                     {
-                        X.Gamepad2.GamepadBattery.Update();
-                        level = X.Gamepad2.GamepadBattery.Level;
+                        X.Gamepad_2.UpdateBattery();
+                        level = X.Gamepad_2.BatteryInfo.ChargeLevel;
                     }
                     break;
                 case "Gamepad 3":
-                    X.Gamepad3.UpdateConnectionState();
-                    if (X.Gamepad3.Available && X.Gamepad3.Connected)
+                    X.Gamepad_3.Update();
+                    if (X.Gamepad_3.IsConnected)
                     {
-                        X.Gamepad3.GamepadBattery.Update();
-                        level = X.Gamepad3.GamepadBattery.Level;
+                        X.Gamepad_3.UpdateBattery();
+                        level = X.Gamepad_3.BatteryInfo.ChargeLevel;
                     }
                     break;
                 case "Gamepad 4":
-                    X.Gamepad4.UpdateConnectionState();
-                    if (X.Gamepad4.Available && X.Gamepad4.Connected)
+                    X.Gamepad_4.Update();
+                    if (X.Gamepad_4.IsConnected)
                     {
-                        X.Gamepad4.GamepadBattery.Update();
-                        level = X.Gamepad4.GamepadBattery.Level;
+                        X.Gamepad_4.UpdateBattery();
+                        level = X.Gamepad_4.BatteryInfo.ChargeLevel;
                     }
                     break;
                 default:
@@ -173,7 +173,7 @@ namespace Battery.Actions
 
         private void StreamDeckConnection_OnPropertyInspectorDidAppear(object sender, streamdeck_client_csharp.StreamDeckEventReceivedEventArgs<streamdeck_client_csharp.Events.PropertyInspectorDidAppearEvent> e)
         {
-            if (X.Available)
+            if (X.IsAvailable)
             {
                 settings.Devices = new List<DeviceInfo> {
                     new DeviceInfo { Name = "Gamepad 1" },
