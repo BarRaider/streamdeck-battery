@@ -20,15 +20,11 @@ namespace Battery.Actions
             {
                 PluginSettings instance = new PluginSettings
                 {
-                    Devices = null,
-                    Device = String.Empty,
-                    Title = String.Empty
+                    Device = "Gamepad 1",
+                    Title = string.Empty
                 };
                 return instance;
             }
-
-            [JsonProperty(PropertyName = "devices")]
-            public List<DeviceInfo> Devices { get; set; }
 
             [JsonProperty(PropertyName = "device")]
             public string Device { get; set; }
@@ -63,13 +59,11 @@ namespace Battery.Actions
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
 
-            Connection.StreamDeckConnection.OnPropertyInspectorDidAppear += StreamDeckConnection_OnPropertyInspectorDidAppear;
             PrefetchImages();
         }
 
         public override void Dispose()
         {
-            Connection.StreamDeckConnection.OnPropertyInspectorDidAppear -= StreamDeckConnection_OnPropertyInspectorDidAppear;
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
@@ -120,7 +114,7 @@ namespace Battery.Actions
                     }
                     break;
                 default:
-                    await Connection.SetImageAsync((String)null);
+                    await Connection.SetImageAsync((string)null);
                     return;
             }
 
@@ -130,7 +124,7 @@ namespace Battery.Actions
             }
             else
             {
-                await Connection.SetImageAsync((String)null);
+                await Connection.SetImageAsync((string)null);
             }
 
             if (!string.IsNullOrEmpty(settings.Title))
@@ -151,7 +145,7 @@ namespace Battery.Actions
                     await Connection.SetImageAsync(lowImage);
                     break;
                 case ChargeLevel.Empty:
-                    await Connection.SetImageAsync((String)null);
+                    await Connection.SetImageAsync((string)null);
                     break;
             }
         }
@@ -169,20 +163,6 @@ namespace Battery.Actions
         private Task SaveSettings()
         {
             return Connection.SetSettingsAsync(JObject.FromObject(settings));
-        }
-
-        private void StreamDeckConnection_OnPropertyInspectorDidAppear(object sender, streamdeck_client_csharp.StreamDeckEventReceivedEventArgs<streamdeck_client_csharp.Events.PropertyInspectorDidAppearEvent> e)
-        {
-            if (X.IsAvailable)
-            {
-                settings.Devices = new List<DeviceInfo> {
-                    new DeviceInfo { Name = "Gamepad 1" },
-                    new DeviceInfo { Name = "Gamepad 2" },
-                    new DeviceInfo { Name = "Gamepad 3" },
-                    new DeviceInfo { Name = "Gamepad 4" }
-                };
-            }
-            SaveSettings();
         }
 
         private void PrefetchImages()

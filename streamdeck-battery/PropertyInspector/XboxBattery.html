@@ -17,7 +17,12 @@
         </details>
         <div class="sdpi-item" id="dvDevices">
             <div class="sdpi-item-label">Device</div>
-            <select class="sdpi-item-value select sdProperty sdList" id="devices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="device"></select>
+            <select class="sdpi-item-value select sdProperty" id="device" oninput="setSettings()">
+                <option value="Gamepad 1" selected>Gamepad 1</option>
+                <option value="Gamepad 2">Gamepad 2</option>
+                <option value="Gamepad 3">Gamepad 3</option>
+                <option value="Gamepad 4">Gamepad 4</option>
+            </select>
         </div>
         <div class="sdpi-item" id="dvTitle">
             <div class="sdpi-item-label">Title</div>
