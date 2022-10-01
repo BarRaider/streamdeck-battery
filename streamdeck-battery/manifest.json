@@ -20,24 +20,6 @@
     },
     {
       "Icon": "Images/icon",
-      "Name": "Xbox Controller Battery",
-      "States": [
-        {
-          "Image": "Images/pluginAction",
-          "TitleAlignment": "middle",
-          "FontSize": "10",
-          "TitleColor": "Yellow"
-
-        }
-      ],
-      "SupportedInMultiActions": false,
-      "DisableCaching": true,
-      "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
-      "UUID": "com.barraider.battery.xbox",
-      "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
-    },
-    {
-      "Icon": "Images/icon",
       "Name": "iCue Battery",
       "States": [
         {
@@ -53,14 +35,32 @@
       "Tooltip": "Shows iCUE battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.icue",
       "PropertyInspectorPath": "PropertyInspector/ICueBattery.html"
+    },
+    {
+      "Icon": "Images/icon",
+      "Name": "Xbox Controller Battery",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
+      "UUID": "com.barraider.battery.xbox",
+      "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
     }
   ],
   "Author": "BarRaider",
-  "Description": "Battery levels for Logitech G HUB and CORSAIR iCue on the Stream Deck",
+  "Description": "Battery levels for Logitech G HUB, CORSAIR iCue, XBox on the Stream Deck",
   "Name": "Battery",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.3",
+  "Version": "1.3.1",
   "CodePath": "com.barraider.battery",
   "Category": "Battery [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
@@ -72,6 +72,6 @@
   ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.9"
+    "MinimumVersion": "5.3"
   }
 }
