@@ -20,7 +20,7 @@ namespace Battery.Actions
             {
                 PluginSettings instance = new PluginSettings
                 {
-                    Device = "Gamepad 1",
+                    Device = String.Empty,
                     Title = string.Empty
                 };
                 return instance;
@@ -78,6 +78,11 @@ namespace Battery.Actions
         {
             ChargeLevel? level = null;
             var title = "Not\nConnected";
+
+            if (String.IsNullOrEmpty(settings.Device))
+            {
+                return;
+            }
 
             switch (settings.Device)
             {

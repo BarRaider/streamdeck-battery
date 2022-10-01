@@ -6,9 +6,8 @@
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
     <title>Xbox Battery Settings</title>
-    <link rel="stylesheet" href="sdpi.css">
-    <script src="sdtools.common.js"></script>
-    <script src="XboxBattery.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
@@ -18,7 +17,8 @@
         <div class="sdpi-item" id="dvDevices">
             <div class="sdpi-item-label">Device</div>
             <select class="sdpi-item-value select sdProperty" id="device" oninput="setSettings()">
-                <option value="Gamepad 1" selected>Gamepad 1</option>
+                <option value="" selected>- Choose Device -</option>
+                <option value="Gamepad 1">Gamepad 1</option>
                 <option value="Gamepad 2">Gamepad 2</option>
                 <option value="Gamepad 3">Gamepad 3</option>
                 <option value="Gamepad 4">Gamepad 4</option>
