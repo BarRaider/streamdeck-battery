@@ -75,16 +75,14 @@ namespace Battery.Internal
         {
             var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var fileName = $"{userProfile}\\AppData\\Local\\Razer\\Synapse3\\Log\\Razer Synapse 3.log";
-            using (StreamReader reader = new StreamReader(new FileStream(fileName,
-                                 FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (StreamReader reader = new StreamReader(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
                 //start at the end of the file
                 long lastMaxOffset = reader.BaseStream.Length;
 
                 while (true)
                 {
-                    System.Threading.Thread.Sleep(250);
-
+                    Thread.Sleep(1000);
 
                     //if the file size has not changed, idle
                     if (reader.BaseStream.Length == lastMaxOffset)
@@ -120,19 +118,20 @@ namespace Battery.Internal
                         {
                             var dt = DateTime.Parse(line.Substring(0, 24));
 
-
                             var deviceName = reader.ReadLine();
                             deviceName = deviceName?.Substring(deviceName.LastIndexOf(':') + 2);
 
-
+                            // Have we already seen this device?
                             var device = devices.SingleOrDefault(x => x.DeviceName == deviceName);
 
                             if (device == null)
                             {
+                                // We have not, lets add it to the list of devices
                                 device = new SynapseBatteryStats { DeviceName = deviceName };
                                 devices.Add(device);
                             }
 
+                            // Update the device properties
                             device.UpdateDate = dt;
 
                             var gotEverything = false;
@@ -158,7 +157,6 @@ namespace Battery.Internal
                 }
             }
         }
-
 
         #endregion
     }
