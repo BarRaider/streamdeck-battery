@@ -2,6 +2,7 @@
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Battery.Internal
 
         private readonly Timer tmrRefreshStats;
         private readonly string GHUB_FULL_PATH;
-        private Dictionary<string, GHubBatteryStats> dicBatteryStats;
+        private ConcurrentDictionary<string, GHubBatteryStats> dicBatteryStats = new ConcurrentDictionary<string, GHubBatteryStats>();
 
         #endregion
 
@@ -75,12 +76,12 @@ namespace Battery.Internal
 
         public GHubBatteryStats GetBatteryStats(string deviceName)
         {
-            if (dicBatteryStats == null || !dicBatteryStats.ContainsKey(deviceName))
+            if (dicBatteryStats == null || !dicBatteryStats.TryGetValue(deviceName, out GHubBatteryStats stats))
             {
                 return null;
             }
 
-            return dicBatteryStats[deviceName];
+            return stats;
         }
 
 
@@ -97,7 +98,7 @@ namespace Battery.Internal
         {
             try
             {
-                dicBatteryStats = new Dictionary<string, GHubBatteryStats>();
+                dicBatteryStats.Clear();
                 if (!File.Exists(GHUB_FULL_PATH))
                 {
                     Logger.Instance.LogMessage(TracingLevel.ERROR, $"RefreshStats Error: Cannot find settings file: {GHUB_FULL_PATH}");
