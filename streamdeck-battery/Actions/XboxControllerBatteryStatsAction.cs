@@ -12,7 +12,7 @@ using static XInput.Wrapper.X.Gamepad.Battery;
 namespace Battery.Actions
 {
     [PluginActionId("com.barraider.battery.xbox")]
-    public class XboxControllerBatteryStatsAction : PluginBase
+    public class XboxControllerBatteryStatsAction : KeypadBase
     {
         private class PluginSettings
         {

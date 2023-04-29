@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Battery.Actions
 {
     [PluginActionId("com.barraider.battery.icue")]
-    public class ICueBatteryStatsAction : PluginBase
+    public class ICueBatteryStatsAction : KeypadBase
     {
         private class PluginSettings
         {
