@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Automation;
 
 namespace Battery.Internal
 {
@@ -27,9 +28,13 @@ namespace Battery.Internal
                 var count = SendMessage(handle, TB_BUTTONCOUNT, IntPtr.Zero, IntPtr.Zero).ToInt32();
                 if (count == 0)
                 {
-                    Logger.Instance.LogMessage(TracingLevel.ERROR, "ScanToolbarButtons - SendMessage returned null");
-                    return null;
-                }
+                    titles = AETaskbarScan();
+                    if (titles == null || titles.Count == 0)
+                    {
+                        Logger.Instance.LogMessage(TracingLevel.ERROR, "ScanToolbarButtons - SendMessage returned null & AETaskbarScan failed");
+                        return null;
+                    }
+                    return titles;                }
 
                 GetWindowThreadProcessId(handle, out var pid);
                 var hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
@@ -109,6 +114,39 @@ namespace Battery.Internal
             hwnd = FindWindowEx(hwnd, IntPtr.Zero, "SysPager", null);
             return FindWindowEx(hwnd, IntPtr.Zero, "ToolbarWindow32", null);
         }
+
+        private static List<string> AETaskbarScan()
+        {
+            List<string> taskbarItems = new List<string>();
+            try
+            {
+                var trayWnd = AutomationElement.RootElement.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ClassNameProperty, "Shell_TrayWnd"));
+                if (trayWnd == null)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"AETaskbarScan Shell_TrayWnd returned null");
+                    return null;
+                }
+                var panes = trayWnd.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+                foreach (var item in panes)
+                {
+                    if (item is AutomationElement pane)
+                    {
+                        foreach (var button in pane.EnumChildButtons())
+                        {
+                            if (button is AutomationElement ae)
+                            taskbarItems.Add(ae.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString());
+                        }
+                    }
+                }
+                return taskbarItems;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"ToolbarScanner.AETaskbarScan Exception: {ex}");
+            }
+            return null;
+        }
+
 
         [DllImport("kernel32", SetLastError = true)]
         private static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);

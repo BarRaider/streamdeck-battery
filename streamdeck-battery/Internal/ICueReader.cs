@@ -103,6 +103,10 @@ namespace Battery.Internal
                     return;
                 }
                 var titles = ToolbarScanner.ScanToolbarButtons();
+                if (titles == null)
+                {
+                    return;
+                }
 
                 foreach (string title in titles)
                 {
@@ -155,6 +159,8 @@ namespace Battery.Internal
                     return 24;
                 case "critical":
                     return 5;
+                case "unknown":
+                    return 0;
                 default:
                     Logger.Instance.LogMessage(TracingLevel.ERROR, $"Invalid iCue percentage: {batteryLevel}");
                     return 0;                  
