@@ -5,6 +5,10 @@ Shows live battery stats for Logitech G Hub and CORSAIR iCue on the Stream Deck
 
 **Author's website and contact information:** [https://barraider.com](https://barraider.com)
 
+## New in v1.5
+- Added support to read iCue Battery on latest Windows 11 PCs.
+- GHub optimizations
+
 ## New in v1.4
 - Support for Xbox Controller battery levels
 
