@@ -121,7 +121,7 @@ namespace Battery.Actions
             return Connection.SetSettingsAsync(JObject.FromObject(settings));
         }
 
-        private void StreamDeckConnection_OnPropertyInspectorDidAppear(object sender, streamdeck_client_csharp.StreamDeckEventReceivedEventArgs<streamdeck_client_csharp.Events.PropertyInspectorDidAppearEvent> e)
+        private void StreamDeckConnection_OnPropertyInspectorDidAppear(object sender, BarRaider.SdTools.Wrappers.SDEventReceivedEventArgs<BarRaider.SdTools.Communication.SDEvents.PropertyInspectorDidAppearEvent> e)
         {
             settings.Devices = SynapseReader.Instance.GetAllDevices();
             SaveSettings();
