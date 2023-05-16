@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BarRaider.SdTools;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Timers;
 
 namespace Battery.Internal
 {
@@ -12,8 +14,13 @@ namespace Battery.Internal
 
         private static SynapseReader instance = null;
         private static readonly object objLock = new object();
-       
-        private List<SynapseBatteryStats> devices = new List<SynapseBatteryStats>();
+
+        private ConcurrentDictionary<string, SynapseBatteryStats> dicBatteryStats = new ConcurrentDictionary<string, SynapseBatteryStats>();
+
+        private const string SYNAPSE_LOG_FILE_ENDING = @"AppData\Local\Razer\Synapse3\Log\Razer Synapse 3.log";
+        private readonly string SYNAPSE_FULL_PATH;
+        private const int REFRESH_TIMEOUT_MS = 10000;
+        private readonly Timer tmrRefreshStats;
 
         #endregion
 
@@ -22,7 +29,7 @@ namespace Battery.Internal
         public static SynapseReader Instance
         {
             get
-            {                
+            {
                 if (instance != null)
                 {
                     return instance;
@@ -41,9 +48,16 @@ namespace Battery.Internal
 
         private SynapseReader()
         {
-            var ts = new ThreadStart(ReadLogFiles);
-            var backgroundThread = new Thread(ts);
-            backgroundThread.Start();
+            var userProfileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            SYNAPSE_FULL_PATH = Path.Combine(userProfileDir, SYNAPSE_LOG_FILE_ENDING);
+
+            tmrRefreshStats = new Timer
+            {
+                Interval = REFRESH_TIMEOUT_MS
+            };
+            tmrRefreshStats.Elapsed += TmrRefreshStats_Elapsed;
+            tmrRefreshStats.Start();
+            RefreshStats();
         }
 
         #endregion
@@ -52,18 +66,22 @@ namespace Battery.Internal
 
         public List<DeviceInfo> GetAllDevices()
         {
-            // TODO: Need to find a way of forcing a comms check with devices, as they are not populated in the log until one plugs/unplugs them
-            return devices.Select(s => new DeviceInfo() { Name = s.DeviceName }).ToList();
+
+            if (dicBatteryStats == null || dicBatteryStats.Count == 0)
+            {
+                RefreshStats();
+            }
+            return dicBatteryStats.Keys.Select(s => new DeviceInfo() { Name = s }).ToList();
         }
 
         public SynapseBatteryStats GetBatteryStats(string deviceName)
         {
-            if (devices == null || !devices.Any(x=>x.DeviceName == deviceName))
+            if (dicBatteryStats == null || !dicBatteryStats.TryGetValue(deviceName, out SynapseBatteryStats stats))
             {
                 return null;
             }
 
-            return devices.Single(x=>x.DeviceName == deviceName);
+            return stats;
         }
 
 
@@ -71,22 +89,31 @@ namespace Battery.Internal
 
         #region Private Methods
 
-        private void ReadLogFiles()
+        private void TmrRefreshStats_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var fileName = $"{userProfile}\\AppData\\Local\\Razer\\Synapse3\\Log\\Razer Synapse 3.log";
-            using (StreamReader reader = new StreamReader(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-            {
-                //start at the end of the file
-                long lastMaxOffset = reader.BaseStream.Length;
+            RefreshStats();
+        }
 
-                while (true)
+        private void RefreshStats()
+        {
+            if (!File.Exists(SYNAPSE_FULL_PATH))
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} ReadLogFile - File not found {SYNAPSE_FULL_PATH}");
+                return;
+            }
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(new FileStream(SYNAPSE_FULL_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
-                    Thread.Sleep(1000);
+                    //start at the end of the file
+                    long lastMaxOffset = reader.BaseStream.Length;
 
                     //if the file size has not changed, idle
                     if (reader.BaseStream.Length == lastMaxOffset)
-                        continue;
+                    {
+                        return;
+                    }
 
                     //seek to the last max offset
                     reader.BaseStream.Seek(lastMaxOffset, SeekOrigin.Begin);
@@ -121,15 +148,7 @@ namespace Battery.Internal
                             var deviceName = reader.ReadLine();
                             deviceName = deviceName?.Substring(deviceName.LastIndexOf(':') + 2);
 
-                            // Have we already seen this device?
-                            var device = devices.SingleOrDefault(x => x.DeviceName == deviceName);
-
-                            if (device == null)
-                            {
-                                // We have not, lets add it to the list of devices
-                                device = new SynapseBatteryStats { DeviceName = deviceName };
-                                devices.Add(device);
-                            }
+                            var device = new SynapseBatteryStats { DeviceName = deviceName };
 
                             // Update the device properties
                             device.UpdateDate = dt;
@@ -149,15 +168,21 @@ namespace Battery.Internal
                                     gotEverything = true;
                                 }
                             }
+
+                            dicBatteryStats[deviceName] = device;
                         }
                     }
 
                     //update the last max offset
                     lastMaxOffset = reader.BaseStream.Position;
+
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} ReadLogFile Exception: {ex}");
+            }
         }
-
-        #endregion
     }
+    #endregion
 }

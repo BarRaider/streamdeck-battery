@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Battery.Actions
 {
     [PluginActionId("com.barraider.battery.synapse")]
-    internal class SynapseBatteryStatsAction : PluginBase
+    internal class SynapseBatteryStatsAction : KeypadBase
     {
         private class PluginSettings
         {
