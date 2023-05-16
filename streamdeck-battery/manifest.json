@@ -2,7 +2,7 @@
   "Actions": [
     {
       "Icon": "Images/icon",
-      "Name": "G Hub Battery",
+      "Name": "G Hub",
       "States": [
         {
           "Image": "Images/pluginAction",
@@ -20,7 +20,7 @@
     },
     {
       "Icon": "Images/icon",
-      "Name": "iCue Battery",
+      "Name": "iCue",
       "States": [
         {
           "Image": "Images/pluginAction",
@@ -38,25 +38,7 @@
     },
     {
       "Icon": "Images/icon",
-      "Name": "Xbox Controller Battery",
-      "States": [
-        {
-          "Image": "Images/pluginAction",
-          "TitleAlignment": "middle",
-          "FontSize": "10",
-          "TitleColor": "Yellow"
-
-        }
-      ],
-      "SupportedInMultiActions": false,
-      "DisableCaching": true,
-      "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
-      "UUID": "com.barraider.battery.xbox",
-      "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
-    },
-    {
-      "Icon": "Images/icon",
-      "Name": "Razer Device Battery",
+      "Name": "Razer Synapse",
       "States": [
         {
           "Image": "Images/pluginAction",
@@ -71,14 +53,32 @@
       "Tooltip": "Shows Synapse battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.synapse",
       "PropertyInspectorPath": "PropertyInspector/SynapseBattery.html"
+    },
+    {
+      "Icon": "Images/icon",
+      "Name": "Xbox Controller",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
+      "UUID": "com.barraider.battery.xbox",
+      "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
     }
   ],
   "Author": "BarRaider",
-  "Description": "Battery levels for Logitech G HUB, CORSAIR iCue, XBox, Razer Synapse on the Stream Deck",
+  "Description": "Battery levels for Logitech G HUB, Corsair iCue, Razer Synapse, XBox Controllers on the Stream Deck",
   "Name": "Battery",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.5",
+  "Version": "1.5.1",
   "CodePath": "com.barraider.battery",
   "Category": "Battery [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
