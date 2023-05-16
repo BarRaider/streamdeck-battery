@@ -11,7 +11,8 @@ namespace Battery.Internal
     internal class ICueReader
     {
         #region Private members
-        private readonly string[] BATTERY_STATUS_PREFIXES = new string[] { "Battery Status:", "Battery Level" };
+        //                                                                   iCue v4.x                            iCue v5.1
+        private readonly string[] BATTERY_STATUS_PREFIXES = new string[] { "Battery Status:", "Battery Level", "Battery Status" };
 
         private static ICueReader instance = null;
         private static readonly object objLock = new object();
