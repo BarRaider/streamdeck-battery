@@ -21,6 +21,8 @@ namespace Battery.Internal
         private readonly string SYNAPSE_FULL_PATH;
         private const int REFRESH_TIMEOUT_MS = 10000;
         private readonly Timer tmrRefreshStats;
+        
+        private long lastMaxOffset = 0;
 
         #endregion
 
@@ -106,12 +108,9 @@ namespace Battery.Internal
             {
                 using (StreamReader reader = new StreamReader(new FileStream(SYNAPSE_FULL_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
-                    //start at the end of the file
-                    long lastMaxOffset = reader.BaseStream.Length;
-
-                    //if the file size has not changed, idle
                     if (reader.BaseStream.Length == lastMaxOffset)
                     {
+                        // Filesize has not changed since previous check, idle.
                         return;
                     }
 
