@@ -14,6 +14,7 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
+      "UserTitleEnabled": false,
       "Tooltip": "Shows G Hub battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.ghub",
       "PropertyInspectorPath": "PropertyInspector/GHubBattery.html"
@@ -32,6 +33,7 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
+      "UserTitleEnabled": false,
       "Tooltip": "Shows iCUE battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.icue",
       "PropertyInspectorPath": "PropertyInspector/ICueBattery.html"
@@ -50,6 +52,7 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
+      "UserTitleEnabled": false,
       "Tooltip": "Shows Synapse battery stats live on the Stream Deck",
       "UUID": "com.barraider.battery.synapse",
       "PropertyInspectorPath": "PropertyInspector/SynapseBattery.html"
@@ -68,6 +71,7 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
+      "UserTitleEnabled": false,
       "Tooltip": "Show battery status of a connected Xbox controller live on the Stream Deck",
       "UUID": "com.barraider.battery.xbox",
       "PropertyInspectorPath": "PropertyInspector/XboxBattery.html"
