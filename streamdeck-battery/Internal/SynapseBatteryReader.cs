@@ -18,10 +18,7 @@ namespace Battery.Internal
 
         private ConcurrentDictionary<string, SynapseBatteryStats> dicBatteryStats = new ConcurrentDictionary<string, SynapseBatteryStats>();
 
-        private const string SYNAPSE_LOG_FILE_ENDING_V3 = @"AppData\Local\Razer\Synapse3\Log\Razer Synapse 3.log";
-        private const string SYNAPSE_LOG_FILE_ENDING_V4 = @"AppData\Local\Razer\RazerAppEngine\User Data\Logs\background-manager.log";
-        private readonly int SYNAPSE_VERSION;
-        private readonly string SYNAPSE_FULL_PATH;
+        private readonly int SYNAPSE_VERSION = -1;
         private const int REFRESH_TIMEOUT_MS = 10000;
         private readonly Timer tmrRefreshStats;
 
@@ -53,21 +50,25 @@ namespace Battery.Internal
 
         private SynapseReader()
         {
-            var userProfileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            SYNAPSE_FULL_PATH = Path.Combine(userProfileDir, SYNAPSE_LOG_FILE_ENDING_V3);
-            SYNAPSE_VERSION = 3;
 
-            if (!File.Exists(SYNAPSE_FULL_PATH))
+            // Attempt to determine the installed Razer Version
+
+            // Check for Synapse 3
+            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"AppData\Local\Razer\Synapse3")))
             {
-                SYNAPSE_FULL_PATH = Path.Combine(userProfileDir, SYNAPSE_LOG_FILE_ENDING_V4);
-                Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Constructor - V3 File not found ({SYNAPSE_FULL_PATH}) trying V4 file ({SYNAPSE_FULL_PATH})");
+                SYNAPSE_VERSION = 3;
+            }
 
-                if (!File.Exists(SYNAPSE_FULL_PATH))
-                {
-                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} Constructor - File not found {SYNAPSE_FULL_PATH}");
-                    return;
-                }
+            // Check for Synapse 4
+            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"AppData\Local\Razer\RazerAppEngine")))
+            {
                 SYNAPSE_VERSION = 4;
+            }
+
+            if (SYNAPSE_VERSION == -1)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} Constructor - Could not determine Synapse version");
+                return;
             }
 
             tmrRefreshStats = new Timer
@@ -115,9 +116,33 @@ namespace Battery.Internal
 
         private void RefreshStats()
         {
+            var userProfileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string fullLogPath;
+
+            if (SYNAPSE_VERSION == 3)
+            {
+                // v3 is a single log file
+                fullLogPath = Path.Combine(userProfileDir, @"AppData\Local\Razer\Synapse3\Log\Razer Synapse 3.log");
+            }
+            else
+            {
+                // v4 can have mutiple rotated log files (e.g background-manager.log, background-manager1.log, background-manager2.log, etc)
+                // We need to find the newest one and read from that
+                var files = Directory.GetFiles(Path.Combine(userProfileDir, @"AppData\Local\Razer\RazerAppEngine\User Data\Logs"), "background-manager*.log");
+                // if there are no files, log error and return
+                if (files.Length == 0)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} RefreshStats - No V4 log files found in directory");
+                    return;
+                }
+                // Otherwise, get the newest file
+                fullLogPath = files.OrderByDescending(f => f).FirstOrDefault();
+            }
+
+            // Now lets read it
             try
             {
-                using (StreamReader reader = new StreamReader(new FileStream(SYNAPSE_FULL_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                using (StreamReader reader = new StreamReader(new FileStream(fullLogPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     if (reader.BaseStream.Length == lastMaxOffset)
                     {
@@ -194,7 +219,7 @@ namespace Battery.Internal
                                     var jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
                                     if (jsonObj?.hasBattery == true && jsonObj.powerStatus != null)
-                                    {                                        
+                                    {
                                         var device = new SynapseBatteryStats
                                         {
                                             DeviceName = jsonObj.name.en,
