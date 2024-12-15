@@ -150,6 +150,12 @@ namespace Battery.Internal
                         return;
                     }
 
+                    if (reader.BaseStream.Length < lastMaxOffset)
+                    {
+                        // Filesize has decreased/rotated, reset the offset and start from the beginning.
+                        lastMaxOffset = 0;
+                    }
+
                     //seek to the last max offset
                     reader.BaseStream.Seek(lastMaxOffset, SeekOrigin.Begin);
 
