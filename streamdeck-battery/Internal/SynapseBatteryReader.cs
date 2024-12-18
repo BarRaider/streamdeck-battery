@@ -126,16 +126,32 @@ namespace Battery.Internal
             }
             else
             {
-                // v4 can have mutiple rotated log files (e.g background-manager.log, background-manager1.log, background-manager2.log, etc)
-                // We need to find the newest one and read from that
+                // v4's log rotation appears to follow the following rules:
+                //    - When the log file reaches ~5MB, it is rotated to background-manager1.log
+                //    - When background-manager1.log is full, it is rotated to background-manager2.log
+                //    - When background-manager2.log is full, it is rotated to background-manager3.log
+                //    - When background-manager3.log is full, it is rotated to background-manager4.log
+                //    - When background-manager4.log is full, it is rotated to background-manager5.log, background-manager.log is deleted
+                //    - When background-manager5.log is full:
+                //        - background-manager1.log is deleted
+                //        - background-manager2.log is renamed to background-manager1.log
+                //        - background-manager3.log is renamed to background-manager2.log
+                //        - background-manager4.log is renamed to background-manager3.log
+                //        - background-manager5.log is renamed to background-manager4.log
+                //        - A new background-manager5.log is created
+                //    - The process repeats
+
+                // First run is simple, we just take the latest file and start from there, so lets start with a search for files matching the pattern background-manager*.log
                 var files = Directory.GetFiles(Path.Combine(userProfileDir, @"AppData\Local\Razer\RazerAppEngine\User Data\Logs"), "background-manager*.log");
+                
                 // if there are no files, log error and return
                 if (files.Length == 0)
                 {
                     Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} RefreshStats - No V4 log files found in directory");
                     return;
                 }
-                // Otherwise, get the newest file
+                
+                // Get the latest file
                 fullLogPath = files.OrderByDescending(f => f).FirstOrDefault();
             }
 
@@ -148,6 +164,13 @@ namespace Battery.Internal
                     {
                         // Filesize has not changed since previous check, idle.
                         return;
+                    }
+
+                    // If the current file is smaller than the last max offset, we have a new file.
+                    if (reader.BaseStream.Length < lastMaxOffset)
+                    {
+                        // Reset the last max offset
+                        lastMaxOffset = 0;
                     }
 
                     //seek to the last max offset
