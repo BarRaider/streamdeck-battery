@@ -82,7 +82,7 @@
   "Name": "Battery",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.6.4",
+  "Version": "1.7",
   "CodePath": "com.barraider.battery",
   "Category": "Battery [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
