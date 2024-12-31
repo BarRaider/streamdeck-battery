@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Timers;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Battery.Internal
 {
@@ -57,12 +58,14 @@ namespace Battery.Internal
             if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"AppData\Local\Razer\Synapse3")))
             {
                 SYNAPSE_VERSION = 3;
+                Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} Constructor - Detected Synapse 3");
             }
 
             // Check for Synapse 4
             if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"AppData\Local\Razer\RazerAppEngine")))
             {
                 SYNAPSE_VERSION = 4;
+                Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} Constructor - Detected Synapse 4");
             }
 
             if (SYNAPSE_VERSION == -1)
@@ -116,6 +119,7 @@ namespace Battery.Internal
 
         private void RefreshStats()
         {
+            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - Starting RefreshStats Run");
             var userProfileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string fullLogPath;
 
@@ -126,26 +130,18 @@ namespace Battery.Internal
             }
             else
             {
-                // v4's log rotation appears to follow the following rules:
-                //    - When the log file reaches ~5MB, it is rotated to background-manager1.log
-                //    - When background-manager1.log is full, it is rotated to background-manager2.log
-                //    - When background-manager2.log is full, it is rotated to background-manager3.log
-                //    - When background-manager3.log is full, it is rotated to background-manager4.log
-                //    - When background-manager4.log is full, it is rotated to background-manager5.log, background-manager.log is deleted
-                //    - When background-manager5.log is full:
-                //        - background-manager1.log is deleted
-                //        - background-manager2.log is renamed to background-manager1.log
-                //        - background-manager3.log is renamed to background-manager2.log
-                //        - background-manager4.log is renamed to background-manager3.log
-                //        - background-manager5.log is renamed to background-manager4.log
-                //        - A new background-manager5.log is created
-                //    - The process repeats
+                // v4's log gets rotated, so we need to find the latest log file
+                // In some cases (not all) a file named "background-manager-frame.log" exists, we need to ensure that the files ONLY match the pattern background-manager*.log, where * is either nothing or a number
+                Regex reg = new Regex(@"background-manager\d*\.log");
 
                 // First run is simple, we just take the latest file and start from there, so lets start with a search for files matching the pattern background-manager*.log
-                var files = Directory.GetFiles(Path.Combine(userProfileDir, @"AppData\Local\Razer\RazerAppEngine\User Data\Logs"), "background-manager*.log");
-                
+                var files = Directory.GetFiles(Path.Combine(userProfileDir, @"AppData\Local\Razer\RazerAppEngine\User Data\Logs"), "background-manager*.log")
+                    .Where(path=> reg.IsMatch(path))
+                    .ToList();
+
+
                 // if there are no files, log error and return
-                if (files.Length == 0)
+                if (! files.Any())
                 {
                     Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} RefreshStats - No V4 log files found in directory");
                     return;
@@ -155,6 +151,18 @@ namespace Battery.Internal
                 fullLogPath = files.OrderByDescending(f => f).FirstOrDefault();
             }
 
+            if (fullLogPath != null)
+            {
+                Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - Reading log file: {fullLogPath}");
+            }
+            else
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} RefreshStats - Could not find a log file");
+                return;
+            }
+
+            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - LastMaxOffset: {lastMaxOffset}");
+
             // Now lets read it
             try
             {
@@ -162,6 +170,7 @@ namespace Battery.Internal
                 {
                     if (reader.BaseStream.Length == lastMaxOffset)
                     {
+                        Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - Filesize has not changed since previous check, idle.");
                         // Filesize has not changed since previous check, idle.
                         return;
                     }
@@ -169,6 +178,7 @@ namespace Battery.Internal
                     // If the current file is smaller than the last max offset, we have a new file.
                     if (reader.BaseStream.Length < lastMaxOffset)
                     {
+                        Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - Filesize is smaller than last max offset, resetting to start of file.");
                         // Reset the last max offset
                         lastMaxOffset = 0;
                     }
@@ -262,6 +272,7 @@ namespace Battery.Internal
 
                     //update the last max offset
                     lastMaxOffset = reader.BaseStream.Position;
+                    Logger.Instance.LogMessage(TracingLevel.DEBUG, $"{this.GetType()} RefreshStats - LastMaxOffset updated to: {lastMaxOffset}");
 
                 }
             }
