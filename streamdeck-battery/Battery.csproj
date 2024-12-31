@@ -92,7 +92,6 @@
     <Compile Include="Internal\ICueReader.cs" />
     <Compile Include="Internal\GHubReader.cs" />
     <Compile Include="Internal\ToolbarScanner.cs" />
-    <Compile Include="Internal\UpdateHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
