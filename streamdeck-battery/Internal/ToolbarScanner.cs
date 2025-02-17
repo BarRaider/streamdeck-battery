@@ -18,11 +18,15 @@ namespace Battery.Internal
 
             try
             {
-                var handle = GetSystemTrayHandle();
+                var handle = GetSystemTrayHandle_Win11();
                 if (handle == IntPtr.Zero)
                 {
-                    Logger.Instance.LogMessage(TracingLevel.ERROR, "ScanToolbarButtons - GetSystemTrayHandle returned null");
-                    return null;
+                    handle = GetSystemTrayHandle_Win1124H2();
+                    if (handle == IntPtr.Zero)
+                    {
+                        Logger.Instance.LogMessage(TracingLevel.ERROR, "ScanToolbarButtons - GetSystemTrayHandle returned null");
+                        return null;
+                    }
                 }
 
                 var count = SendMessage(handle, TB_BUTTONCOUNT, IntPtr.Zero, IntPtr.Zero).ToInt32();
@@ -107,13 +111,20 @@ namespace Battery.Internal
             }
         }
 
-        private static IntPtr GetSystemTrayHandle()
+        private static IntPtr GetSystemTrayHandle_Win11()
         {
             var hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "Shell_TrayWnd", null);
             hwnd = FindWindowEx(hwnd, IntPtr.Zero, "TrayNotifyWnd", null);
             hwnd = FindWindowEx(hwnd, IntPtr.Zero, "SysPager", null);
             return FindWindowEx(hwnd, IntPtr.Zero, "ToolbarWindow32", null);
         }
+
+        private static IntPtr GetSystemTrayHandle_Win1124H2()
+        {
+            var hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "TopLevelWindowForOverflowXamlIsland", null);
+            return FindWindowEx(hwnd, IntPtr.Zero, "Windows.UI.Composition.DesktopWindowContentBridge", null);
+        }
+        
 
         private static List<string> AETaskbarScan()
         {
