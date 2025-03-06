@@ -5,6 +5,10 @@ Shows live battery stats for Logitech G Hub and CORSAIR iCue on the Stream Deck
 
 **Author's website and contact information:** [https://barraider.com](https://barraider.com)
 
+## New in v1.8
+- Fix iCue support after latest Win11 update
+- Improved Razer v4 support
+
 ## New in v1.7
 - Support for Razer Synapse v4
 
